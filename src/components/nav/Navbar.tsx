@@ -1,10 +1,15 @@
 import { NavLink } from "react-router";
-import logo from '../../assets/images/logo-img.png'
+import { HiBars4 } from "react-icons/hi2";
+import logo from '../../assets/images/logo-img.png';
+import { useState } from "react";
+
 export const Navbar = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <div className="sticky top-0 bg-white/95 backdrop-blur-sm border-b border-gray-200 z-50">
       <div className="max-w-6xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
-        {/* logo  */}
+        {/* Logo */}
         <NavLink to="/" className="flex items-center space-x-2">
           <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center">
             <img
@@ -16,7 +21,7 @@ export const Navbar = () => {
           <span className="text-xl font-bold text-gray-900">Hive</span>
         </NavLink>
 
-        {/* nav links */}
+        {/* Desktop nav links */}
         <nav className="hidden md:flex">
           <ul className="flex items-center space-x-8">
             <li><NavLink to="/about" className="text-gray-600 hover:text-gray-900 font-medium">About</NavLink></li>
@@ -26,11 +31,12 @@ export const Navbar = () => {
           </ul>
         </nav>
 
-        {/* Auth buttons */}
+        {/* Auth buttons + Burger */}
         <div className="flex items-center space-x-3">
+          {/* Auth buttons visible on all screens */}
           <NavLink
             to="/login"
-            className="hidden sm:block text-sm text-gray-700 hover:text-gray-900 font-medium"
+            className="text-sm text-gray-700 hover:text-gray-900 font-medium"
           >
             Sign in
           </NavLink>
@@ -41,9 +47,28 @@ export const Navbar = () => {
           >
             Get started
           </NavLink>
-        </div>
 
+          {/* Burger menu visible only on small screens */}
+          <button
+            className="ml-2 md:hidden p-2 rounded-lg hover:bg-gray-100"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            <HiBars4 className="w-6 h-6" />
+          </button>
+        </div>
       </div>
+
+      {/* Dropdown menu for small screens */}
+      {menuOpen && (
+        <div className="md:hidden bg-white border-t border-gray-200 shadow-md">
+          <ul className="flex flex-col p-4 space-y-2">
+            <li><NavLink to="/about" className="text-gray-700 hover:text-gray-900 block">About</NavLink></li>
+            <li><NavLink to="/features" className="text-gray-700 hover:text-gray-900 block">Features</NavLink></li>
+            <li><NavLink to="/pricing" className="text-gray-700 hover:text-gray-900 block">Pricing</NavLink></li>
+            <li><NavLink to="/contact" className="text-gray-700 hover:text-gray-900 block">Contact Us</NavLink></li>
+          </ul>
+        </div>
+      )}
     </div>
   );
 };

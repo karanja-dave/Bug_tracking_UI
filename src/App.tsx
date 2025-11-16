@@ -8,6 +8,7 @@ import { FeaturesPage } from './pages/FeaturesPage';
 import { Error } from './components/Error';
 import { About } from './components/about/About';
 import { Contact } from './components/contacts/Contacts';
+import { Pricing } from './components/pricing/Pricing';
 
 
 function App() {
@@ -24,6 +25,10 @@ function App() {
     {
       path:'/about',
       element:<About/>
+    },
+    {
+      path:'pricing',
+      element:<Pricing/>
     },
     {
       path:'/contact',
