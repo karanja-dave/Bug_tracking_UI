@@ -1,9 +1,28 @@
 import { motion } from "framer-motion";
+import React from "react";
 
-export const ModalForm = ({ open, category, onClose }) => {
+type Category =
+  | "technical"
+  | "pricing"
+  | "general"
+  | "feedback"
+  | "feature"
+  | "partnerships";
+
+interface ModalFormProps {
+  open: boolean;
+  category: Category | undefined;
+  onClose: () => void;
+}
+
+export const ModalForm: React.FC<ModalFormProps> = ({
+  open,
+  category,
+  onClose,
+}) => {
   if (!open) return null;
 
-  const titles = {
+  const titles: Record<Category, string> = {
     technical: "Technical Support",
     pricing: "Pricing & Account",
     general: "General Questions",
@@ -22,7 +41,7 @@ export const ModalForm = ({ open, category, onClose }) => {
         className="bg-white rounded-xl shadow-xl p-8 max-w-lg w-full"
       >
         <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
-          {titles[category] || "Contact Us"}
+          {category ? titles[category] : "Contact Us"}
         </h2>
 
         <form className="space-y-4">
@@ -47,7 +66,7 @@ export const ModalForm = ({ open, category, onClose }) => {
           <div>
             <label className="block text-gray-700 mb-1">Message</label>
             <textarea
-              rows="4"
+              rows={4}
               placeholder="Write your message here..."
               className="w-full border rounded-lg px-3 py-2"
             ></textarea>
