@@ -3,12 +3,14 @@ import { Footer } from "../footer/Footer";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { ModalForm } from "./Form";
+import type { Category } from "./Form"; // <-- add this
+
 
 export const Contact = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState<Category | undefined>(undefined);
 
-  const openForm = (type:any) => {
+  const openForm = (type:Category) => {
     setCategory(type);
     setModalOpen(true);
   };
