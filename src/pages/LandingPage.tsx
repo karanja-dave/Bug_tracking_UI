@@ -1,7 +1,7 @@
 import { ArrowRight } from "lucide-react"
 import { Navbar } from "../components/nav/Navbar"
 import { Hero } from "../components/Hero"
-import { Features } from "../components/features/Features"
+import { Features } from "../components/products/Products"
 import { FooterInfo } from "../components/footer/FooterInfo"
 
 export const LandingPage = () => {

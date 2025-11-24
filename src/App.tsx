@@ -4,7 +4,7 @@ import { RouterProvider } from 'react-router'
 import './App.css'
 
 import { LandingPage } from './pages/LandingPage';
-import { FeaturesPage } from './pages/FeaturesPage';
+import { FeaturesPage } from './pages/ProductsPage';
 import { Error } from './components/Error';
 import { About } from './components/about/About';
 import { Contact } from './components/contacts/Contacts';
