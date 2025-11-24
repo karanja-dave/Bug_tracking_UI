@@ -7,7 +7,7 @@ export const Footer = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row justify-between items-center">
           
-          {/* Logo */}
+          {/* logo */}
          <NavLink to="/" className="flex items-center space-x-2">
           <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center">
             <img
@@ -19,7 +19,7 @@ export const Footer = () => {
           <span className="text-xl font-bold text-gray-900">Hive</span>
         </NavLink>
 
-          {/* Footer Links */}
+          {/* footer links */}
           <ul className="flex space-x-6 text-sm text-gray-600">
             <li><NavLink to="/about" className="hover:text-gray-900">About</NavLink></li>
             <li><NavLink to="/features" className="hover:text-gray-900">Features</NavLink></li>
@@ -28,7 +28,7 @@ export const Footer = () => {
           </ul>
         </div>
 
-        {/* Copyright */}
+        {/* copyright */}
         <div className="mt-4 text-center text-sm text-gray-500">
           © 2025 Hive. All rights reserved.
         </div>
