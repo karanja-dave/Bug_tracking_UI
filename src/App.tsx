@@ -9,6 +9,9 @@ import { Error } from './components/Error';
 import { About } from './components/about/About';
 import { Contact } from './components/contacts/Contacts';
 import { Pricing } from './components/pricing/Pricing';
+import { Register } from './components/auth/Register';
+import { Login } from './components/auth/Login';
+import { Verification } from './components/auth/Verification';
 
 
 function App() {
@@ -33,6 +36,18 @@ function App() {
     {
       path:'/contact',
       element:<Contact/>
+    },
+    {
+      path:'/register',
+      element: <Register/>
+    },
+    {
+      path:'/login',
+      element: <Login/>
+    },
+    {
+      path: '/verify',
+      element: <Verification/>
     },
     {
       path:'*', //handling non-existing routes
