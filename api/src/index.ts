@@ -1,49 +1,53 @@
 // import packages 
 import express from 'express' 
-import mssql, { ConnectionPool } from 'mssql'
-import dotenv from 'dotenv'
+import cors from 'cors'
+// import modules 
 import userRoutes from './router/users.routes'
 import projectRoutes from './router/project.routes'
 import userProjectRoutes from './router/projectuser.routes'
 
-// import modules 
-import { getPool } from './db/config'
-
-
-// initialize the express app object - stores all express functions in the app object
-const app = express()
-
-// middlewares 
-app.use(express.json()); //parse json files
-
-userRoutes(app);
-projectRoutes(app)
-userProjectRoutes(app)
-
-// load .env file variables 
-dotenv.config()
-
-// register routes 
-// todoRoutes(app)
-// userRoutes(app)
-// define the port : entry point to the server
-const port=process.env.PORT||8081
-
-// start the server
-//fun tells express to listen to all request entering through defined port 
-app.listen(port,()=>{
-    console.log(`Server is running on port: http://localhost:${port}`)
-})
+import { logger } from './middleware/logger';
+import { rateLimiterMiddleware } from './middleware/rateLimiter';
 
 
 
-//define root route. check that endpoint works
-app.get('/',(_,res)=>{
-    res.send("Hello, the express server is up and running")
-})
+const initializeApp = () => {
+    //create express app
+    const app = express();
 
-// connect app to database 
-getPool()
-    .then(()=>console.log("Database connected successfully"))
-    .catch((err:any)=>console.log("Database connection failed"))
+    
+    //middleware
+    app.use(express.json()); //parse json request body
+    app.use(cors({
+        origin: "http://localhost:5173",
+        methods: ["GET", "POST", "PUT", "DELETE"],
+    }))
+
+    //middleware
+    app.use(express.json()); //parse json request body
+    //logger
+    app.use(rateLimiterMiddleware);
+    //cors
+    app.use(logger);
+    //ratelimiter
+
+    //register routes
+    userRoutes(app); //register user routes
+    projectRoutes(app); //register project  routes
+    userProjectRoutes(app) //register userProject routes
+
+    //default route
+    app.get('/', (_, res) => {
+        res.send("Hello, express API is running...");
+    });
+
+    return app;
+}
+
+const app = initializeApp();
+export default app;
+
+
+
+
 
