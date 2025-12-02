@@ -4,19 +4,31 @@ CREATE TABLE Users (
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
-    role_user VARCHAR(20) NOT NULL CHECK (role_user IN ('admin', 'developer', 'tester')),
+    role_user VARCHAR(20) NOT NULL
+        DEFAULT 'user'                         -- default role
+        CHECK (role_user IN ('user', 'admin', 'developer', 'tester')),
     password_hash VARCHAR(255) NOT NULL,
-    is_active BIT DEFAULT 1,                -- helps with soft deletes or suspensions
-    created_at DATETIME DEFAULT GETDATE(),  -- auto-timestamp when inserted
-    updated_at DATETIME DEFAULT GETDATE()   -- useful when profile changes
+    is_active BIT DEFAULT 1,                   -- helps with soft deletes or suspensions
+    created_at DATETIME DEFAULT GETDATE(),     -- auto-timestamp when inserted
+    updated_at DATETIME DEFAULT GETDATE()      -- useful when profile changes
 );
 
+
+ALTER TABLE Users
+ADD verification_code VARCHAR(10),
+    is_verified BIT DEFAULT 0;
+
 -- Sample data for Users table
+-- defined user role 
 INSERT INTO Users (first_name, last_name, email, role_user, password_hash, created_at)
 VALUES
 ('Agnes', 'Kitua', 'agnes@gmail.com', 'admin', 'hashed_pw_123', GETDATE()),
 ('David', 'Karanja', 'dave@gmail.com', 'developer', 'hashed_pw_456', GETDATE()),
 ('Kelly', 'Kamau', 'kelly@gmail.com', 'tester', 'hashed_pw_789', GETDATE());
+-- insert with undefined user role 
+INSERT INTO Users (first_name, last_name, email, password_hash, created_at)
+VALUES
+('Brian', 'Karani', 'karani@gmail.com', 'hashed_pw_123', GETDATE());
 
 -- view user records 
 SELECT *FROM Users

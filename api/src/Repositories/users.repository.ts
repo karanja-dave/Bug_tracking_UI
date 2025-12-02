@@ -38,12 +38,14 @@ export const emailExists = async (email: string): Promise<boolean> => {
 //create new user
 export const createUser = async (user: NewUser) => {
     const pool = await getPool();
+    // define default role as user 
+    const role = user.role_user||'user'
     await pool
         .request()
         .input('first_name', user.first_name)
         .input('last_name', user.last_name)
         .input('email', user.email)
-        .input('role_user', user.role_user)
+        .input('role_user', role)
         .input('password_hash', user.password_hash || 'defaultpasswordhash')
         .input('created_at', new Date())
         .query(`
