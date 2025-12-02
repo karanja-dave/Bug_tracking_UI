@@ -64,6 +64,27 @@ export const updateUser = async (req:Request, res:Response) => {
 }
 
 
+// verify a user 
+export const verifyUser = async(req:Request,res:Response)=>{
+    try {
+        const {email,code}=req.body
+        if(!email||!code){
+            return res.status(400).json({message:'Email and Code Required'})
+        }
+
+        const result = await userService.verifyUser(email,code)
+        return res.status(200).json(result)
+    } catch (error:any) {
+        if(error.message==='User not found'){
+            res.status(404).json({message:error.message});
+        }else if(error.message==='Invalid verification code'){
+            res.status(400).json({message:error.message})
+        }else{
+            res.status(500).json({error:error.message})
+        }
+    }
+}
+
 //delete a user
 export const deleteUser = async (req:Request, res: Response) => {
     const id = parseInt(req.params.id);

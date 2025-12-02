@@ -40,8 +40,36 @@ export const createUser = async(user:NewUser)=>{
         user.password_hash=await bcrypt.hash(user.password_hash,10)
         console.log('Hashed password',user.password_hash)
     }
+    // save new user to Db 
+    const result = await userRepositories.createUser(user)
+    // generate a random verifcation code 
+    const verifcationCode = Math.floor(100000 + Math.random() * 900000).toString() 
 
-    return await userRepositories.createUser(user)
+    await userRepositories.setVerificationCode(user.email,verifcationCode)
+
+    // send verifcationCode via email 
+
+    return{message:'User Created Successfully'}
+
+}
+
+// verification of new users 
+export const verifyUser = async(email:string, code:string)=>{
+    // check user existence using email 
+    const user = await userRepositories.getUserByEmail(email)
+
+    // actions to take based on user existence or not 
+    if(!user){
+        throw new Error('User not found')
+    }
+    if(user.verification_code !==code){
+        throw new Error('Invalid verification code')
+    }
+    await userRepositories.verifyUser(email)
+
+    // send email on successfull verifiication 
+
+    return{message:'User Verified Successfully'}
 }
 
 // update user by Id 

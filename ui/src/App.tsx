@@ -12,6 +12,7 @@ import { Pricing } from './components/pricing/Pricing';
 import { Register } from './components/auth/Register';
 import { Login } from './components/auth/Login';
 import { Verification } from './components/auth/Verification';
+import { Toaster } from 'sonner';
 
 
 function App() {
@@ -58,6 +59,12 @@ function App() {
   return(
     <>
     <RouterProvider router={router}/>
+    <Toaster position='top-right' toastOptions={{
+        classNames:{
+          error:'bg-red-500 text-white',
+          success:"bg-green text-white"
+        }
+        }} />
     </>
   )
 

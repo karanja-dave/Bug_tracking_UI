@@ -36,6 +36,15 @@ export const userApi= createApi({   //setsup api endpoints for user managment ie
         }) ,
         // fetch users 
         // update users 
+        // verify new users 
+        verifyUser: builder.mutation<{message:string},{email:string,code:string}>({
+            query:(data)=>({
+                url: '/verify',
+                method:'POST',
+                body:data
+            }),
+            invalidatesTags:['Users']
+        })
     })
 })
 

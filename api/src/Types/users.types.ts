@@ -5,6 +5,8 @@ export interface User {
     email: string;
     role_user: string;
     password_hash: string;
+    is_verified?:boolean;
+    verification_code?:string|null;
 }
 
 export interface NewUser {

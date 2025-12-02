@@ -2,20 +2,27 @@ import { Navbar } from "../nav/Navbar"
 import {useForm, type SubmitHandler} from 'react-hook-form'
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from 'yup'
+import { userApi } from "../../features/auth/UserAPI"
+import { useLocation } from "react-router"
+import { toast } from "sonner"
 
 // define types  
 type VerifyInputs={
   email:string;
-  code:number;
+  code:string;
 }
 
 // define schema 
 const schema = yup.object({
   email:yup.string().email('Invalid Email').max(100,'Max 100 characters').required('Email is resuired'),
-  code:yup.number().min(6,'Max 6 characters').required("Code is requrired")
+  code:yup.string().min(6,'Max 6 characters').required("Code is requrired")
 });
 
 export const Verification = () => {
+  const [verifyUser,{isLoading}]=userApi.useVerifyUserMutation()
+  const location = useLocation()
+
+  const emailState = location.state.email || ''
 
   const{
     register,
@@ -26,8 +33,15 @@ export const Verification = () => {
   })
 
   // define submit function 
-  const onSubmit: SubmitHandler<VerifyInputs>=(data)=>{
-    console.log(data);
+  const onSubmit: SubmitHandler<VerifyInputs>=async(data)=>{
+    const response = await verifyUser(data).unwrap()
+    try {
+      console.log("Response",response);
+      toast.success(response.message)
+    } catch (error:any) {
+      console.log("Error",error);
+      toast.error(error.data.message)
+    }
   }
   return (
     <>

@@ -21,6 +21,9 @@ const userRoutes = (app: Express) => {
 
     // Log in user 
     app.post('/login',userController.loginUser)
+
+    // verify user 
+    app.post("/verify",userController.verifyUser)
 };
 
 export default userRoutes;
