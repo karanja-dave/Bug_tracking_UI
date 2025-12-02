@@ -6,12 +6,12 @@ import { ApiDomain } from"../../utils/ApiDomains"; //endpoint to hit backend
 // define user types for ading new users 
 export type TUser={
     userid:number,
-    first_names:string,
+    first_name:string,
     last_name:string,
     email:string,
-    phone_number:string,
-    password:string,
-    role:string
+    role_user:string,
+    // phone_number:string,
+    password_hash:string,
 
 }
 
@@ -25,7 +25,7 @@ export const userApi= createApi({   //setsup api endpoints for user managment ie
     }),
     tagTypes:['Users'], //used to invalidate items that relates to user
     endpoints:(builder)=>({//builder is a fun that helps define endpoint in an API
-        createUsers:builder.mutation<TUser,Partial<TUser>>({ //mutation means your perfoming data changes in your DB
+        createUsers:builder.mutation<{message:string},Partial<TUser>>({ //mutation means your perfoming data changes in your DB
 
             query:(newUser)=>({
                 url:"/users",

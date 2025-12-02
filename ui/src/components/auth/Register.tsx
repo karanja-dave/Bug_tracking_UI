@@ -1,15 +1,21 @@
-import { Navbar } from "../nav/Navbar"
-import {useForm, type SubmitHandler} from 'react-hook-form'
+// import packages 
 import {yupResolver} from "@hookform/resolvers/yup"
 import * as yup from 'yup'
+import { useNavigate } from "react-router"
+import { toast } from "sonner"
+
+// import modules 
+import {useForm, type SubmitHandler} from 'react-hook-form'
+import { Navbar } from "../nav/Navbar"
+import { userApi } from "../../features/auth/UserAPI"
 
 // types 
 type RegisterInputs={
     first_name:string;
     last_name:string;
     email:string;
-    phone_number:string;
-    password:string;
+    // phone_number:string; //implement phone numbe record
+    password_hash:string;
     confirmpassword:string;
   }
 
@@ -18,11 +24,11 @@ const schema = yup.object({
   first_name:yup.string().max(50,"Max 50 Characters").required('First name is required'),
   last_name:yup.string().max(50,"Max 50 Characters").required('Last name is required'),
   email:yup.string().email('Invalid Email').max(100,'Max 100 Characters').required('Email is required'),
-  phone_number:yup.string().max(20,'Max 50 Characters').required('Phone number is required'),
-  password:yup.string().min(6,'Min 6 Characters').max(255,'Max 255 Characters').required('Password is required'),
+  // phone_number:yup.string().max(20,'Max 50 Characters').required('Phone number is required'),
+  password_hash:yup.string().min(6,'Min 6 Characters').max(255,'Max 255 Characters').required('Password is required'),
   // confirm pass 
   confirmpassword: yup.string()
-    .oneOf([yup.ref('password')],'Passowords must match') //refferences the password and confirm that input given is same as that of password
+    .oneOf([yup.ref('password_hash')],'Passwords must match') //refferences the password and confirm that input given is same as that of password
     .required('Confirm password is required')
 
 })
@@ -31,6 +37,9 @@ const schema = yup.object({
 
 
 export const Register = () => {
+  const navigate = useNavigate()
+  // recreate what createuser from userAPI does 
+  const [createUser, {isLoading}] =userApi.useCreateUsersMutation()
   const{
     register, //will be use to register every field
     handleSubmit,
@@ -40,8 +49,22 @@ export const Register = () => {
   })
 
   // define submit function 
-  const onSubmit:SubmitHandler<RegisterInputs>= (data)=>{
-    console.log(data);
+  const onSubmit:SubmitHandler<RegisterInputs>= async(data)=>{
+    try {
+      const response = await createUser(data).unwrap()
+      console.log("Response",response);
+      toast.success(response.message)
+
+      // redirect user to verifictaion after succesfull registeration 
+      setTimeout(()=>{
+        navigate('/verify',{
+          state:{email:data.email} //carries the email to the verification page 
+        })
+      },2000) //delay of 2seconds for toast to appear before redirection 
+    } catch (error:any) {
+      console.log("Error",error);
+      toast.error(error.data.message)
+    }
 }
   return (
     <>
@@ -91,30 +114,34 @@ export const Register = () => {
                 <span className="text-red-700 text-small">{errors.email.message}</span>
               )
             }
+
             {/* phone number input  */}
-            <input
+            {/* <input
             type="text" 
             {...register("phone_number")}
             placeholder="Phone Number" 
             className="input border border-gray-300 rounded w-full p-2 text-lg"
-            />
+            /> */}
+
             {/* error handling:phone number  */}
-            {
+
+            {/* {
               errors.phone_number &&(
                 <span className="text-red-700 text-small">{errors.phone_number.message}</span>
               )
-            }
+            } */}
+
             {/* password input  */}
             <input 
             type="password" 
-            {...register("password")}
+            {...register("password_hash")}
             placeholder="Password" 
             className="input border border-gray-300 rounded w-full p-2 text-lg"
             />
             {/* error handling password  */}
             {
-              errors.password &&(
-                <span className="text-red-700 text-small">{errors.password.message}</span>
+              errors.password_hash &&(
+                <span className="text-red-700 text-small">{errors.password_hash.message}</span>
               )
             }
             {/* confirm password input  */}
@@ -132,7 +159,17 @@ export const Register = () => {
             }
             
 
-            <button type="submit" className="btn btn-primary w-full mt-4">Register</button>
+            <button type="submit" className="btn btn-primary w-full mt-4" disabled={isLoading}>
+
+          {
+            isLoading?(
+              <>
+              <span className="loading loading-spinner text-primary"/>Please Wait...
+
+              </>
+            ):"Register"
+          }
+         </button>
           </form>
         </div>
     </div>
