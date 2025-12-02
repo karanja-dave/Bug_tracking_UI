@@ -2,6 +2,10 @@ import { Navbar } from "../nav/Navbar"
 import {useForm, type SubmitHandler} from 'react-hook-form'
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from 'yup'
+import { loginAPI } from "../../features/auth/loginAPI"
+import { toast } from "sonner"
+import { loginSuccess } from "../../features/auth/userSlice"
+import { useDispatch } from "react-redux"
 
 // define types  
 type LoginInputs={
@@ -16,7 +20,8 @@ const schema = yup.object({
 });
 
 export const Login = () => {
-
+  const dispatch = useDispatch()
+  const [loginUser,{isLoading}]=loginAPI.useLoginUserMutation()
   const{
     register,
     handleSubmit,
@@ -26,8 +31,18 @@ export const Login = () => {
   })
 
   // define submit function 
-  const onSubmit: SubmitHandler<LoginInputs>=(data)=>{
-    console.log(data);
+  const onSubmit: SubmitHandler<LoginInputs>=async(data)=>{
+    try {
+      const response = await loginUser(data).unwrap()
+      console.log(response.message);
+      toast.success(response.message)
+      // dispatch: store user info on successfull login to local storage 
+      dispatch(loginSuccess(response))
+
+    } catch (error:any) {
+      console.log(error);
+      toast.error(error.data.error)
+    }
   }
   return (
     <>
