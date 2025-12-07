@@ -6,6 +6,8 @@ import jwt from 'jsonwebtoken'
 // import modules 
 import *as userRepositories from '../Repositories/users.repository'
 import { NewUser,UpdateUser,User } from '../Types/users.types'
+import { sendEmail } from '../mailer/mailer'
+import { emailTemplate } from '../mailer/emailTemplate'
 
 // load env variables 
 dotenv.config()
@@ -48,8 +50,13 @@ export const createUser = async(user:NewUser)=>{
     await userRepositories.setVerificationCode(user.email,verifcationCode)
 
     // send verifcationCode via email 
+    await sendEmail(
+        user.email,
+        'Verify your Email',
+        emailTemplate.verify(user.first_name,verifcationCode)
+    )
 
-    return{message:'User Created Successfully'}
+    return{message:'User Created Successfully. Verification code sent to Email'}
 
 }
 
@@ -68,6 +75,11 @@ export const verifyUser = async(email:string, code:string)=>{
     await userRepositories.verifyUser(email)
 
     // send email on successfull verifiication 
+    await sendEmail(
+        user.email,
+        "Your Email has been Verified",
+        emailTemplate.verifiedSuccess(user.first_name)
+    )
 
     return{message:'User Verified Successfully'}
 }
@@ -129,7 +141,7 @@ export const loginUser=async(email:string,password:string)=>{
             FN:user.first_name,
             LN:user.last_name,
             email:user.email,  
-            role:user.role_user         
+            role_user:user.role_user         
 }
     }
 }
