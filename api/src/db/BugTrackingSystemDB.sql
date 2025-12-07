@@ -50,12 +50,12 @@ CREATE TABLE Projects (
 -- Sample data for Projects table
 INSERT INTO Projects (title, description, created_by, created_at)
 VALUES
-('Bug Tracking System', 'A web application to manage software defects and issues.', 1, GETDATE()),
-('E-Commerce API', 'Backend API for managing online store operations.', 1, GETDATE()),
-('Learning Management Portal', 'Platform for managing courses and student progress.', 1, GETDATE());
+('Bug Tracking System', 'A web application to manage software defects and issues.', 2, GETDATE()),
+('E-Commerce API', 'Backend API for managing online store operations.', 2, GETDATE()),
+('Learning Management Portal', 'Platform for managing courses and student progress.', 3, GETDATE());
 
 -- view projects records 
- 
+ SELECT *FROM Projects
 -- DELETE FROM Projects WHERE projectid=19
 
 -- user project table 
@@ -71,9 +71,39 @@ CREATE TABLE UserProject (
   CONSTRAINT UQ_ProjectMember UNIQUE (projectid, userid)
 );
 
-SELECT * FROM UserProject WHERE projectid=2;
+SELECT * FROM UserProject
  
-SELECT *FROM UserProject
+--  tasks table 
+CREATE TABLE Tasks (
+    taskid INT IDENTITY(1,1) PRIMARY KEY,
+    projectid INT NOT NULL,
+    created_by INT NOT NULL,
+    assigned_to INT,
+    title VARCHAR(150) NOT NULL,
+    description TEXT,
+    priority VARCHAR(20) DEFAULT 'medium'
+        CHECK (priority IN ('low', 'medium', 'high', 'urgent')),
+    status VARCHAR(20) DEFAULT 'todo'
+        CHECK (status IN ('todo', 'in_progress', 'blocked', 'completed')),
+    due_date DATE,
+    created_at DATETIME DEFAULT GETDATE(),
+    updated_at DATETIME DEFAULT GETDATE(),
+
+    FOREIGN KEY (projectid) REFERENCES Projects(projectid),
+    FOREIGN KEY (created_by) REFERENCES Users(userid),
+    FOREIGN KEY (assigned_to) REFERENCES Users(userid)
+);
+
+-- insert vallues 
+INSERT INTO Tasks (projectid, created_by, assigned_to, title, description, priority, status, due_date)
+VALUES
+(2, 2, 3, 'Design login UI', 'Create a modern and responsive login interface for the app', 'high', 'in_progress', '2025-01-10'),
+(2, 4, 2, 'Write unit tests for auth', 'Write comprehensive unit tests for authentication module', 'medium', 'todo', '2025-01-12');
+
+
+-- view tasks table 
+SELECT *FROM Tasks
+
 
 
 -- bugs table
