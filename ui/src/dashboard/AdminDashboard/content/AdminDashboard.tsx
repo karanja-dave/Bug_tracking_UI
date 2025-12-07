@@ -29,7 +29,7 @@ export const AdminDashboard = () => {
         </span> */}
       </div>
 
-      <div className="flex bg-gray-100">
+      <div className="flex bg-gray-100  bg-gray-100">
         {/* Drawer menu */}
         <aside
           className={`fixed z-40 w-64 bg-white ${
@@ -52,7 +52,7 @@ export const AdminDashboard = () => {
         </aside>
 
         {/* Main content */}
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-6 w-auto sm:w-full">
           <Outlet />
         </main>
       </div>

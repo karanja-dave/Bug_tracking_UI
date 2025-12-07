@@ -6,6 +6,7 @@ import { userApi } from "../features/auth/UserAPI"
 import { persistReducer, persistStore } from "redux-persist"
 import { loginAPI } from "../features/auth/loginAPI";
 import userSlice from "../features/auth/userSlice"
+import { taskAPI } from "../features/task/taskAPI";
 
 
 const persistConfig ={
@@ -19,6 +20,7 @@ const persistConfig ={
 const rootReducer = combineReducers({
     [userApi.reducerPath]:userApi.reducer,
     [loginAPI.reducerPath]:loginAPI.reducer,
+    [taskAPI.reducerPath]:taskAPI.reducer,
     user:userSlice
 })
 
@@ -31,9 +33,12 @@ export const store = configureStore({
     middleware: (getDefaultMiddleware)=>getDefaultMiddleware({
          serializableCheck:false
     })
+    // concat userApi 
     .concat(userApi.middleware)
     // concat loginAPI 
     .concat(loginAPI.middleware)
+    // concat taskAPI 
+    .concat(taskAPI.middleware)
     //concat other middlewares below
  })
 

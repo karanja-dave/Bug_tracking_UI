@@ -17,6 +17,11 @@ import { Verification } from './components/auth/Verification';
 import {AdminDashboard} from "./dashboard/AdminDashboard/content/AdminDashboard"
 import { UserDashboard } from './dashboard/Userdashboard/content/UserDashboard';
 import type { RootState } from './app/store';
+import { Tasks } from './dashboard/AdminDashboard/content/Tasks/Tasks';
+import { Projects } from './dashboard/AdminDashboard/content/Projects/Projects';
+import { Admin } from './dashboard/AdminDashboard/content/Admin/Admin';
+import { Bugs } from './dashboard/AdminDashboard/content/Bugs/Bugs';
+import { Teams } from './dashboard/AdminDashboard/content/Teams/Teams';
 
 
 function App() {
@@ -67,23 +72,23 @@ function App() {
       children:[
         {
           path:"dashboard",
-          element: <h1>Admin Dashboard</h1>
+          element: <Admin/>
         },
         {
           path:"projects",
-          element: <h1>All Projects</h1>,
+          element: <Projects/>,
         },
         {
           path:"tasks",
-          element: <h1>All Tasks</h1>
+          element: <Tasks/>
         },
         {
           path:"bugs",
-          element: <h1>Bug tracking</h1>
+          element: <Bugs/>
         },
         {
           path:"team",
-          element: <h1>Teams</h1>
+          element: <Teams/>
         },
         {
           path:"settings",
