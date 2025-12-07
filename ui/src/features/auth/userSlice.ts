@@ -9,7 +9,7 @@ export type UserState={
         LN:string;
         email:string;
         PN:string
-        role:string
+        role_user:string
     }|null; //user state is null before login and on logout
 }
 
