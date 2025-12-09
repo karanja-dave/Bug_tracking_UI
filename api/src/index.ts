@@ -6,8 +6,8 @@ import userRoutes from './router/users.routes'
 import projectRoutes from './router/project.routes'
 import userProjectRoutes from './router/projectuser.routes'
 
-import { logger } from './middleware/logger';
-import { rateLimiterMiddleware } from './middleware/rateLimiter';
+// import { logger } from './middleware/logger';
+// import { rateLimiterMiddleware } from './middleware/rateLimiter';
 import taskRoutes from './router/tasks.routes'
 
 
@@ -27,9 +27,9 @@ const initializeApp = () => {
     //middleware
     app.use(express.json()); //parse json request body
     //logger
-    app.use(rateLimiterMiddleware);
+    // app.use(rateLimiterMiddleware);
     //cors
-    app.use(logger);
+    // app.use(logger);
     //ratelimiter
 
     //register routes
