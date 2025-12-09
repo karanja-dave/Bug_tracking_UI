@@ -5,6 +5,7 @@
     "target": "es2022", //specifies compiler you target for ts files 
     "rootDir": "./src", //tell compiler that all ts files are eld in the specified directory
     "moduleResolution": "nodenext", //controls how modules are found in our project
+    "isolatedModules": true,
     "outDir": "./dist", //tells compiler where to store js files compiled from ts files 
 
     "esModuleInterop": true, 

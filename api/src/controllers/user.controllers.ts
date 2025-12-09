@@ -33,7 +33,7 @@ export const getUserById = async (req: Request, res: Response) => {
 
 //create new user
 export const createUser = async (req: Request, res:Response) => {
-    const user = req.body;
+    const user = req.body; //json body 
     try {
         const result = await userService.createUser(user);
         res.status(201).json(result);
@@ -116,7 +116,7 @@ export const loginUser=async(req:Request,res:Response)=>{
         if(error.message=='User not found'){
             res.status(400).json({message:'User not found'})
         }else if(error.message=="Invalid Credentials"){
-            res.status(404).json({message:'Invalid Credentilas'})
+            res.status(404).json({message:'Invalid Credentials'})
         }else{
             res.status(500).json({message:'Internal Server Error'})
         }
