@@ -24,6 +24,7 @@ export const Login = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [loginUser,{isLoading}]=loginAPI.useLoginUserMutation()
+  
   const{
     register,
     handleSubmit,
@@ -34,10 +35,10 @@ export const Login = () => {
 
   // define submit function 
   const onSubmit: SubmitHandler<LoginInputs>=async(data)=>{
-    console.log(data);
+    // console.log(data);
     try {
       const response = await loginUser(data).unwrap()
-      console.log(response);
+      // console.log(response);
       console.log(response.message);
       toast.success(response.message)
       // dispatch: store user info on successfull login to local storage 
