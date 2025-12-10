@@ -2,11 +2,30 @@ import { getPool } from "../db/config";
 import { NewTask, Tasks, UpdateTask } from "../Types/tasks.types";
 
 // get all tasks
-export const getAllTasks = async():Promise<Tasks[]>=>{
-    const pool = await getPool()
-    const results = await pool.request().query('SELECT *FROM Tasks')
-    return results.recordset
-}
+export const getAllTasks = async (): Promise<Tasks[]> => {
+  const pool = await getPool();
+
+  const query = `
+    SELECT
+      t.taskid,
+      t.title AS task_title,
+      p.title AS project,
+      CONCAT(cu.first_name, ' ', cu.last_name) AS created_by,
+      CONCAT(u.first_name, ' ', u.last_name) AS assigned_to,
+      t.description,
+      t.priority,
+      t.status,
+      t.due_date
+    FROM Tasks t
+    LEFT JOIN Users u ON t.assigned_to = u.userid
+    LEFT JOIN Users cu ON t.created_by = cu.userid
+    LEFT JOIN Projects p ON t.projectid = p.projectid
+    ORDER BY t.due_date ASC;
+  `;
+
+  const results = await pool.request().query(query);
+  return results.recordset;
+};
 
 // create new task 
 export const createTask = async(newTask:NewTask)=>{
