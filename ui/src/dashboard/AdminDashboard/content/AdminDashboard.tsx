@@ -1,12 +1,13 @@
 import { Outlet } from "react-router";
-import { Navbar } from "../../../components/nav/Navbar";
 import { FaBars } from "react-icons/fa";
 import { IoCloseSharp } from "react-icons/io5";
 import { useState } from "react";
 import { AdminDrawer } from "../aside/AdminDrawer";
+import { AdminNavbar } from "../../../components/nav/AdminNavbar";
 
 export const AdminDashboard = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(""); // <-- add this
 
   // toggle drawer for mobile
   const handleDrawerToggle = () => {
@@ -15,29 +16,28 @@ export const AdminDashboard = () => {
 
   return (
     <div>
-      <Navbar />
+      {/* Pass the required props */}
+      <AdminNavbar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
       {/* Top bar with toggle */}
-      <div className="flex  bg-white items-center">
+      <div className="flex bg-white items-center">
         <button
-          className="mr-4 text-white text-2xl lg:hidden" onClick={handleDrawerToggle}>
+          className="mr-4 text-white text-2xl lg:hidden"
+          onClick={handleDrawerToggle}
+        >
           {drawerOpen ? <IoCloseSharp /> : <FaBars />}
         </button>
-
-        {/* <span className="text-white text-lg font-semibold">
-          Welcome to your Admin Dashboard
-        </span> */}
       </div>
 
-      <div className="flex bg-gray-100  bg-gray-100">
+      <div className="flex bg-gray-100">
         {/* Drawer menu */}
         <aside
           className={`fixed z-40 w-64 bg-white ${
             drawerOpen ? "" : "hidden"
           } lg:static lg:block lg:w-64`}
-          style={{ 
+          style={{
             minHeight: "calc(100vh - 64px)",
-            top: "64px"
+            top: "64px",
           }}
         >
           <div className="p-4">
@@ -47,7 +47,7 @@ export const AdminDashboard = () => {
             >
               <IoCloseSharp />
             </button>
-            <AdminDrawer/>
+            <AdminDrawer />
           </div>
         </aside>
 
