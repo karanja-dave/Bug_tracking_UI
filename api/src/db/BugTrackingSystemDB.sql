@@ -104,8 +104,6 @@ VALUES
 -- view tasks table 
 SELECT *FROM Tasks
 
-
-
 -- bugs table
 CREATE TABLE Bugs (
     bugid INT IDENTITY(1,1) PRIMARY KEY,
@@ -125,9 +123,9 @@ CREATE TABLE Bugs (
 -- Sample data for Bugs table
 INSERT INTO Bugs (projectid, reported_by, assigned_to, title, description, severity, status, created_at, updated_at)
 VALUES
-(1, 3, 2, 'Login page not loading', 'The login page shows a blank screen after submitting credentials.', 'high', 'open', GETDATE(), GETDATE()),
-(1, 3, 2, 'Dashboard crash on filter', 'Filtering data on the dashboard causes a 500 server error.', 'critical', 'in_progress', GETDATE(), GETDATE()),
-(2, 3, 2, 'Incorrect total in cart', 'The shopping cart total does not update correctly after removing items.', 'medium', 'resolved', GETDATE(), GETDATE());
+(2, 3, 2, 'Login page not loading', 'The login page shows a blank screen after submitting credentials.', 'high', 'open', GETDATE(), GETDATE()),
+(2, 3, 2, 'Dashboard crash on filter', 'Filtering data on the dashboard causes a 500 server error.', 'critical', 'in_progress', GETDATE(), GETDATE()),
+(3, 3, 2, 'Incorrect total in cart', 'The shopping cart total does not update correctly after removing items.', 'medium', 'resolved', GETDATE(), GETDATE());
 
 -- view Bugs records 
 SELECT *FROM Bugs

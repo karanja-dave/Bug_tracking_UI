@@ -9,6 +9,7 @@ import userProjectRoutes from './router/projectuser.routes'
 // import { logger } from './middleware/logger';
 // import { rateLimiterMiddleware } from './middleware/rateLimiter';
 import taskRoutes from './router/tasks.routes'
+import bugsRoutes from './router/bugs.routes'
 
 
 
@@ -37,6 +38,7 @@ const initializeApp = () => {
     projectRoutes(app); //register project  routes
     userProjectRoutes(app) //register userProject routes
     taskRoutes(app)
+    bugsRoutes(app)
 
     //default route
     app.get('/', (_, res) => {

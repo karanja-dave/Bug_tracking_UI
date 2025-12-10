@@ -1,39 +1,48 @@
-// src/services/bugs.service.ts
-import { BugsRepository } from '../Repositories/bugs.repository';
-import { Bug } from '../Types/bugs.types';
+// import modules 
+import * as bugsRepositories from '../Repositories/bugs.repository'
+import { NewBug, UpdateBug } from '../Types/bugs.types'
 
-export class BugsService {
-  private repo = new BugsRepository();
+// get all bugs 
+export const getAllBugs=async()=> await bugsRepositories.getAllBugs()
 
-  async createBug(payload: Bug): Promise<number> {
-    // Basic validation (extend as needed)
-    if (!payload.title || payload.title.length < 3) throw new Error('Title is required and must be >= 3 chars');
-    if (!payload.projectid) throw new Error('projectid is required');
-    // default status
-    payload.status = payload.status ?? 'open';
-    payload.severity = payload.severity ?? 'low';
-    const id = await this.repo.create(payload);
-    return id;
+// add new bug 
+export const createBug=async(newbug:NewBug)=>await bugsRepositories.createBug(newbug)
+
+// get bug by id 
+export const getBugById=async(id:number)=>{
+  // handle bad requests
+  if(isNaN(id)){
+    throw new Error('Invalid Bug Id')
   }
-
-  async getBug(bugid: number): Promise<Bug | null> {
-    return this.repo.findById(bugid);
+  const existingbug=await bugsRepositories.getBugById(id)
+  if(!existingbug){
+    throw new Error("Bug not found")
   }
+  return existingbug;
+}
 
-  async listByProject(projectid: number): Promise<Bug[]> {
-    return this.repo.findAllByProject(projectid);
+// delete todo by id 
+export const deleteTodoById=async(id:number)=>{
+  // handle bad requests 
+  if(isNaN(id)){
+    throw new Error("Invalid Bug Id")
   }
+  const existingbug=await bugsRepositories.getBugById
+  if(!existingbug){
+    throw new Error("Bug not found")
+  }
+  return await bugsRepositories.deleteBug(id)
+}
 
-  async updateBug(bugid: number, updates: Partial<Bug>): Promise<void> {
-    // possible business rules:
-    if (updates.status && !['open','in_progress','resolved','closed'].includes(updates.status)) {
-      throw new Error('Invalid status');
-    }
-    await this.repo.update(bugid, updates);
+// update bug by Id 
+export const updateBugById=async(id:number,bug:UpdateBug)=>{
+  // handle bad requests 
+  if(isNaN(id)){
+    throw new Error('Invalid Bug Id')
   }
-
-  async deleteBug(bugid: number): Promise<void> {
-    // maybe check permissions or archiving
-    await this.repo.delete(bugid);
+  const existingbug=await bugsRepositories.getBugById(id)
+  if(!existingbug){
+    throw new Error('Bug not found')
   }
+  return await bugsRepositories.updateBugById(id,bug)
 }

@@ -1,22 +1,20 @@
-// src/routes/bugs.routes.ts
-import { Router } from 'express';
-import { BugsController } from '../controllers/bugs.controller';
+// import packages 
+import { Express } from "express";
 
-const router = Router();
+// import modules 
+import * as bugController from '../controllers/bugs.controller'
 
-// POST /api/bugs
-router.post('/', BugsController.create);
+const bugsRoutes=(app:Express)=>{
+    // get all bugs 
+    app.get('/bugs',bugController.getAllBugs)
+    // add new bug 
+    app.post('/bugs',bugController.createBug)
+    // get bug by id 
+    app.get('/bugs/:id',bugController.getBugById)
+    // delete bug by id 
+    app.delete('/bugs/:id',bugController.deleteBugById)
+    // update bug by id 
+    app.put('/bugs/:id',bugController.updateBugById)
+}
 
-// GET /api/bugs/:bugid
-router.get('/:bugid', BugsController.get);
-
-// GET /api/projects/:projectid/bugs
-router.get('/project/:projectid', BugsController.listByProject);
-
-// PATCH /api/bugs/:bugid
-router.patch('/:bugid', BugsController.update);
-
-// DELETE /api/bugs/:bugid
-router.delete('/:bugid', BugsController.remove);
-
-export default router;
+export default bugsRoutes

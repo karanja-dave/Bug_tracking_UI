@@ -1,59 +1,81 @@
-// src/controllers/bugs.controller.ts
-import { Request, Response } from 'express';
-import { BugsService } from '../services/bugs.services';
+// import packages 
+import { Request, Response } from "express";
 
-const service = new BugsService();
+// import modules 
+import * as bugServices from '../services/bugs.services'
+import { parse } from "path";
 
-export class BugsController {
-  static async create(req: Request, res: Response) {
-    try {
-      const payload = req.body;
-      const id = await service.createBug(payload);
-      return res.status(201).json({ bugid: id, message: 'Bug created' });
-    } catch (err: any) {
-      return res.status(400).json({ error: err.message || 'Failed to create bug' });
+// get all bugs 
+export const getAllBugs= async(req:Request,res:Response)=>{
+  try {
+    const bugs = await bugServices.getAllBugs()
+    res.status(200).json({data:bugs})
+  } catch (error:any) {
+    res.status(500).json({error:"Internal Server Error"})
+  }
+}
+
+// add new bug 
+export const createBug=async(req:Request,res:Response)=>{
+  try {
+    const newtodo=req.body;
+    const result=await bugServices.createBug(newtodo)
+    res.status(201).json(result)
+  } catch (error:any) {
+    res.status(500).json({error:"Internal Server Error"})
+  }
+}
+
+// get bug by id 
+export const getBugById=async(req:Request,res:Response)=>{
+  const id = parseInt(req.params.id)
+
+  try {
+    const bug= await bugServices.getBugById(id)
+    res.status(200).json(bug)
+  } catch (error:any) {
+    if(error.message==="Invalid Bug Id"){
+      res.status(400).json({message:error.message})
+    }else if(error.message==="Bug not found"){
+      res.status(404).json({message:error.message})
+    }else{
+      res.status(500).json(error.message)
     }
   }
+}
 
-  static async get(req: Request, res: Response) {
-    try {
-      const bugid = parseInt(req.params.bugid);
-      const bug = await service.getBug(bugid);
-      if (!bug) return res.status(404).json({ error: 'Bug not found' });
-      return res.json(bug);
-    } catch (err: any) {
-      return res.status(400).json({ error: err.message });
+// delete bug by Id 
+export const deleteBugById= async(req:Request,res:Response)=>{
+  const id = parseInt(req.params.id)
+  try {
+    const result = await bugServices.deleteTodoById(id)
+    res.status(200).json(result)
+  } catch (error:any) {
+    if(error.message==="Invalid Bug Id"){
+      res.status(400).json({message:error.message})
+    }else if(error.message==="Bug not found"){
+      res.status(404).json({message:error.message})
+    }else{
+      res.status(500).json({mesage:error.message})
     }
   }
+}
 
-  static async listByProject(req: Request, res: Response) {
-    try {
-      const projectid = parseInt(req.params.projectid);
-      const list = await service.listByProject(projectid);
-      return res.json(list);
-    } catch (err: any) {
-      return res.status(400).json({ error: err.message });
-    }
-  }
+// update bug by id 
+export const updateBugById=async(req:Request,res:Response)=>{
+  const id = parseInt(req.params.id);
+  const bug = req.body
 
-  static async update(req: Request, res: Response) {
-    try {
-      const bugid = parseInt(req.params.bugid);
-      const updates = req.body;
-      await service.updateBug(bugid, updates);
-      return res.json({ message: 'Bug updated' });
-    } catch (err: any) {
-      return res.status(400).json({ error: err.message });
-    }
-  }
-
-  static async remove(req: Request, res: Response) {
-    try {
-      const bugid = parseInt(req.params.bugid);
-      await service.deleteBug(bugid);
-      return res.status(204).send();
-    } catch (err: any) {
-      return res.status(400).json({ error: err.message });
+  try {
+    const result = await bugServices.updateBugById(id,bug)
+    res.status(200).json(result)
+  } catch (error:any) {
+    if(error.message==="Invalid Bug Id"){
+      res.status(400).json({message:error.message})
+    }else if(error.message==="Bug not found"){
+      res.status(404).json({message:error.message})
+    }else{
+      res.status(500).json({error:error.message})
     }
   }
 }
