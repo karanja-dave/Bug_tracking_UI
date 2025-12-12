@@ -6,7 +6,7 @@ import * as projectServices from '../services/project.service'
 export const getAllProjects = async (req: Request, res: Response) => {
     try {
         const project = await projectServices.listProjects();
-        res.status(200).json(project);
+        res.status(200).json({data:project});
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }

@@ -13,7 +13,6 @@ CREATE TABLE Users (
     updated_at DATETIME DEFAULT GETDATE()      -- useful when profile changes
 );
 
-
 ALTER TABLE Users
 ADD verification_code VARCHAR(10),
     is_verified BIT DEFAULT 0;
@@ -72,6 +71,14 @@ CREATE TABLE UserProject (
 );
 
 SELECT * FROM UserProject
+
+SELECT p.projectid, p.title, p.description, u.userid, u.first_name, u.last_name, up.role_in_project
+FROM Projects p
+JOIN UserProject up ON p.projectid = up.projectid
+JOIN Users u ON up.userid = u.userid
+WHERE p.status != 'archived'
+ORDER BY p.title;
+
  
 --  tasks table 
 CREATE TABLE Tasks (
@@ -143,8 +150,8 @@ CREATE TABLE Comments (
 -- Sample data for Comments table
 INSERT INTO Comments (bugid, userid, content, timestamp)
 VALUES
-(1, 2, 'Investigating the login issue; may be due to session timeout.', GETDATE()),
-(1, 3, 'Confirmed that it occurs only on Chrome browser.', GETDATE()),
+(2, 2, 'Investigating the login issue; may be due to session timeout.', GETDATE()),
+(3, 3, 'Confirmed that it occurs only on Chrome browser.', GETDATE()),
 (2, 2, 'Patch deployed to staging environment for testing.', GETDATE());
 
 -- view records in comments table 
@@ -164,5 +171,6 @@ DBCC CHECKIDENT ('Users', RESEED, 1);
 DBCC CHECKIDENT ('Projects', RESEED, 1);
 DBCC CHECKIDENT ('Bugs', RESEED, 1);
 DBCC CHECKIDENT ('Comments', RESEED, 1);
+
 
 

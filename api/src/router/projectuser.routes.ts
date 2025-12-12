@@ -8,7 +8,7 @@ const userProjectRoutes = async(app:Express)=>{
     // add users to a project
     app.post('/projects/members',userProjectControllers.newMember)
     // get all users in a project 
-    app.get('/projects/:projid/members', userProjectControllers.getAllUsersInProject);
+    app.get('/projects/members/:projid', userProjectControllers.getAllUsersInProject);
 
 }
 

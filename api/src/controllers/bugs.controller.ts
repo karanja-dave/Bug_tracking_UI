@@ -11,7 +11,7 @@ export const getAllBugs= async(req:Request,res:Response)=>{
     const bugs = await bugServices.getAllBugs()
     res.status(200).json({data:bugs})
   } catch (error:any) {
-    res.status(500).json({error:"Internal Server Error"})
+    res.status(500).json({error:error.message})
   }
 }
 
