@@ -2,12 +2,34 @@
 import { getPool } from "../db/config";
 import { Bug, NewBug, UpdateBug } from "../Types/bugs.types";
 
-// get all bugs 
-export const getAllBugs = async():Promise<Bug[]>=>{
-  const pool= await getPool()
-  const results = await pool.request().query('SELECT *FROM Bugs')
-  return results.recordset
-}
+export const getAllBugs = async (): Promise<Bug[]> => {
+  const pool = await getPool();
+
+  const result = await pool.request().query(`
+    SELECT 
+      b.bugid,
+      b.projectid,
+      p.title AS project_title,
+      p.description AS project_description,
+      b.reported_by,
+      r.first_name + ' ' + r.last_name AS reporter_name,
+      b.assigned_to,
+      a.first_name + ' ' + a.last_name AS assignee_name,
+      b.title,
+      b.description,
+      b.severity,
+      b.status,
+      b.created_at,
+      b.updated_at
+    FROM Bugs b
+    LEFT JOIN Projects p ON b.projectid = p.projectid
+    LEFT JOIN Users r ON b.reported_by = r.userid
+    LEFT JOIN Users a ON b.assigned_to = a.userid
+    ORDER BY b.created_at DESC;
+  `);
+
+  return result.recordset;
+};
 
 // add new bugs 
 export const createBug = async (newBug: NewBug) => {
