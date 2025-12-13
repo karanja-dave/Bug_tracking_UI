@@ -2,6 +2,9 @@ import { useState } from "react";
 import { FaPlus, FaChevronDown } from "react-icons/fa";
 import { taskAPI, type TypeTask } from "../../../../features/task/taskAPI";
 import React from "react";
+import { CreateTask } from "./CreateTask";
+import { DeleteTasks } from "./DeleteTask";
+import { UpdateTask } from "./UpdateTask";
 
 export const Tasks = () => {
   const [selectedTask, setSelectedTask] = useState<TypeTask | null>(null);
@@ -13,15 +16,23 @@ export const Tasks = () => {
     setOpenDropdown(openDropdown === taskid ? null : taskid);
   };
 
+  // Handle Update
   const handleUpdate = (task: TypeTask) => {
-    console.log("Update task:", task);
-    setOpenDropdown(null);
-    setSelectedTask(task);
+    setSelectedTask(task); // set selected task
+    setOpenDropdown(null); // close dropdown
+
+    // Show the update modal
+    const modal = document.getElementById("update-task") as HTMLDialogElement;
+    modal.showModal();
   };
 
+  // Handle Delete
   const handleDelete = (task: TypeTask) => {
-    console.log("Delete task:", task);
+    setSelectedTask(task);
     setOpenDropdown(null);
+
+    const modal = document.getElementById("delete_modal") as HTMLDialogElement;
+    modal.showModal();
   };
 
   const getPriorityColor = (priority: string) => {
@@ -49,14 +60,24 @@ export const Tasks = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold text-gray-900">Tasks</h1>
-          <button className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+          <button
+            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            onClick={() =>
+              (document.getElementById("create-task") as HTMLDialogElement).showModal()
+            }
+          >
             <FaPlus size={20} /> New Task
           </button>
         </div>
 
+        {/* call modals */}
+        <CreateTask />
+        <DeleteTasks task={selectedTask} />
+        <UpdateTask task={selectedTask} /> {/* pass selectedTask */}
+
         {/* Table */}
         {tasksData?.data?.length ? (
-          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div className="bg-white rounded-xl border border-gray-200 overflow-visible">
             <div className="overflow-x-auto">
               <table className="min-w-max w-full">
                 <thead className="bg-gray-50 border-b border-gray-200">
@@ -86,17 +107,23 @@ export const Tasks = () => {
                               }`}
                               size={12}
                             />
-                            <p className="text-xs sm:text-sm font-medium text-gray-900">{task.title}</p>
+                            <p className="text-xs sm:text-sm font-medium text-gray-900">
+                              {task.task_title}
+                            </p>
                           </td>
-                          <td className="p-2">{task.projectid}</td>
-                          <td className="p-2">{task.assigned_to}</td>
+                          <td className="p-2">{task.project_title}</td>
+                          <td className="p-2">{task.assigned_to_name}</td>
                           <td className="p-2">
-                            <span className={`text-xs px-2 py-1 rounded ${getStatusColor(task.status)}`}>
+                            <span
+                              className={`text-xs px-2 py-1 rounded ${getStatusColor(task.status)}`}
+                            >
                               {task.status}
                             </span>
                           </td>
                           <td className="p-2">
-                            <span className={`text-xs px-2 py-1 rounded ${getPriorityColor(task.priority)}`}>
+                            <span
+                              className={`text-xs px-2 py-1 rounded ${getPriorityColor(task.priority)}`}
+                            >
                               {task.priority}
                             </span>
                           </td>
@@ -109,17 +136,25 @@ export const Tasks = () => {
                               ⋯
                             </button>
 
+                            {/* dropdown */}
                             {openDropdown === task.taskid && (
                               <div className="absolute right-0 mt-1 w-28 bg-white border border-gray-200 rounded shadow-lg z-10">
                                 <button
                                   className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
-                                  onClick={() => handleUpdate(task)}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleUpdate(task); // immediately opens update modal
+                                  }}
                                 >
                                   Update
                                 </button>
+
                                 <button
                                   className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm text-red-600"
-                                  onClick={() => handleDelete(task)}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDelete(task);
+                                  }}
                                 >
                                   Delete
                                 </button>

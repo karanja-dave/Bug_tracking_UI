@@ -7,25 +7,39 @@ export const getAllTasks = async (): Promise<Tasks[]> => {
 
   const query = `
     SELECT
+      -- Task (main entity)
       t.taskid,
       t.title AS task_title,
-      p.title AS project,
-      CONCAT(cu.first_name, ' ', cu.last_name) AS created_by,
-      CONCAT(u.first_name, ' ', u.last_name) AS assigned_to,
       t.description,
       t.priority,
       t.status,
-      t.due_date
+      t.due_date,
+      t.created_at,
+      t.updated_at,
+
+      -- Project
+      t.projectid,
+      p.title AS project_title,
+
+      -- Created by
+      t.created_by AS created_by_id,
+      CONCAT(cu.first_name, ' ', cu.last_name) AS created_by_name,
+
+      -- Assigned to
+      t.assigned_to AS assigned_to_id,
+      CONCAT(au.first_name, ' ', au.last_name) AS assigned_to_name
+
     FROM Tasks t
-    LEFT JOIN Users u ON t.assigned_to = u.userid
-    LEFT JOIN Users cu ON t.created_by = cu.userid
     LEFT JOIN Projects p ON t.projectid = p.projectid
+    LEFT JOIN Users cu ON t.created_by = cu.userid
+    LEFT JOIN Users au ON t.assigned_to = au.userid
     ORDER BY t.due_date ASC;
   `;
 
-  const results = await pool.request().query(query);
-  return results.recordset;
+  const result = await pool.request().query(query);
+  return result.recordset;
 };
+
 
 // create new task 
 export const createTask = async(newTask:NewTask)=>{

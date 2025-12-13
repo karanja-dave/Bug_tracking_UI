@@ -2,18 +2,24 @@ import { ApiDomain } from "../../utils/ApiDomains";
 import type { RootState } from "../../app/store";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-export type TypeTask={
-    message:string,
-    taskid:number
-    projectid: number;
-    created_by: number;
-    assigned_to: number;
-    title: string;
-    description: string;
-    priority: string;
-    status: string;
-    due_date: string; 
-}
+export type TypeTask = {
+  taskid: number;
+  task_title: string;
+  description: string;
+  priority: string;
+  status: string;
+  due_date: string;
+  created_at?: string;
+  updated_at?: string;
+  projectid: number;
+  project_title: string;
+  created_by_id: number;
+  created_by_name: string;
+  assigned_to_id: number;
+  assigned_to_name: string;
+  message?: string;
+};
+
 
 
 export const taskAPI = createApi({
@@ -34,14 +40,14 @@ export const taskAPI = createApi({
     endpoints:(builder)=>({
 
         // // create tasks 
-        // createTask:builder.mutation<TypeTask,Partial<TypeTask>>({
-        //     query:(newTask)=>({
-        //         url:'/tasks',
-        //         method:'POST',
-        //         body:(newTask)
-        //     }),
-        //     invalidatesTags:['Tasks']
-        // }),
+        createTask:builder.mutation<TypeTask,Partial<TypeTask>>({
+            query:(newTask)=>({
+                url:'/tasks',
+                method:'POST',
+                body:(newTask)
+            }),
+            invalidatesTags:['Tasks']
+        }),
 
         // get all tasks 
         getTasks:builder.query<{data:TypeTask[]},void>({
@@ -50,22 +56,22 @@ export const taskAPI = createApi({
         }),
 
         // delete tasks 
-        // deleteTask:builder.mutation<{success:boolean,id:number},number>({
-        //     query:(id)=>({
-        //         url:`/tasks/${id}`,
-        //         method:'DELETE'
-        //     }),
-        //     invalidatesTags:['Tasks']
-        // }),
+        deleteTask:builder.mutation<{success:boolean,id:number},number>({
+            query:(id)=>({
+                url:`/tasks/${id}`,
+                method:'DELETE'
+            }),
+            invalidatesTags:['Tasks']
+        }),
 
         // update tasks
-        // updateTask:builder.mutation<TypeTask,Partial<TypeTask>&{id:number}>({
-        //     query:(updatedTask)=>({
-        //         url:`/tasks/${updatedTask.id}`,
-        //         method:'PUT',
-        //         body:updatedTask
-        //     }),
-        //     invalidatesTags:['Tasks']
-        // })
+        updateTask:builder.mutation<TypeTask,Partial<TypeTask>&{id:number}>({
+            query:(updatedTask)=>({
+                url:`/tasks/${updatedTask.id}`,
+                method:'PUT',
+                body:updatedTask
+            }),
+            invalidatesTags:['Tasks']
+        })
     })   
 })
