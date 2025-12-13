@@ -24,7 +24,7 @@ const rootReducer = combineReducers({
     [loginAPI.reducerPath]:loginAPI.reducer,
     [taskAPI.reducerPath]:taskAPI.reducer,
     [bugAPI.reducerPath]:bugAPI.reducer,
-    
+    [projectAPI.reducerPath]:projectAPI.reducer,
     user:userSlice
 })
 
@@ -46,7 +46,7 @@ export const store = configureStore({
     // concat bugAPI
     .concat(bugAPI.middleware)
     // concat projectAPI
-    
+    .concat(projectAPI.middleware)
     //concat other middlewares below
  })
 

@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, Outlet } from 'react-router';
 import { RouterProvider } from 'react-router';
 import { Toaster } from 'sonner';
 import { useSelector } from 'react-redux';
@@ -22,6 +22,8 @@ import { Projects } from './dashboard/AdminDashboard/content/Projects/Projects';
 import { Admin } from './dashboard/AdminDashboard/content/Admin/Admin';
 import { Bugs } from './dashboard/AdminDashboard/content/Bugs/Bugs';
 import { Teams } from './dashboard/AdminDashboard/content/Teams/Teams';
+import { CreateTask } from './dashboard/AdminDashboard/content/Tasks/CreateTask';
+import { ProjectPage } from './dashboard/AdminDashboard/content/Projects/ProjectPage';
 
 
 function App() {
@@ -67,35 +69,51 @@ function App() {
     },
     // admin dashboard 
     {
-      path:"/admin",
-      element: isAdmin? <AdminDashboard/>:<Login/>,
-      children:[
+      path: "/admin",
+      element: isAdmin ? <AdminDashboard /> : <Login />,
+      children: [
+        { 
+          path: "dashboard",
+          element: <Admin />
+       },
+
         {
-          path:"dashboard",
-          element: <Admin/>
+          path: "projects",
+          element: <Outlet />, //why outlet here??
+          children: [
+            // projects page 
+            { 
+              path: "",
+              element: <Projects /> 
+            },
+            // individual project page 
+            {
+               path: ":id",
+               element: <ProjectPage /> 
+              }
+          ]
         },
-        {
-          path:"projects",
-          element: <Projects/>,
+
+        { 
+          path: "tasks",
+          element: <Tasks /> 
         },
-        {
-          path:"tasks",
-          element: <Tasks/>
+
+        { 
+          path: "bugs",
+          element: <Bugs />
         },
-        {
-          path:"bugs",
-          element: <Bugs/>
-        },
-        {
-          path:"team",
-          element: <Teams/>
-        },
-        {
-          path:"settings",
+
+        { 
+          path: "team",
+          element: <Teams />
+       },
+        { path: "settings",
           element: <h1>Admin settings</h1>
         }
       ]
-    },
+    }
+,
     // user dashboard 
     {
       path:"/user",
@@ -105,6 +123,7 @@ function App() {
           path:"dashboard",
           element: <h1>Admin Dashboard</h1>
         },
+        
         {
           path:"projects",
           element: <h1>All Projects</h1>,
