@@ -12,6 +12,17 @@ export const getAllProjects = async (req: Request, res: Response) => {
     }
 }
 
+// get all projects with their users 
+export const getAllProjectsWithDetails=async(req:Request,res:Response)=>{
+    try {
+        const projects=await projectServices.getAllProjectsWithDetails();
+        res.status(200).json({data:projects})
+        
+    } catch (error:any) {
+        res.status(500).json({error:error.message})
+    }
+}
+
 
 //get project by id
 export const getProjectById = async (req: Request, res: Response) => {

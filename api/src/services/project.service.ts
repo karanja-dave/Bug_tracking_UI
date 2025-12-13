@@ -4,17 +4,21 @@ import * as projectRepositories from '../Repositories/projects.repository';
 import { Project, NewProject, UpdateProject } from '../Types/projects.types';
 import * as userProjectRepository from '../Repositories/projectuser.repository'
 
-////Fetches all projects from the database.
+//get all projects 
 export const listProjects = async (): Promise<Project[]> => {
     return await projectRepositories.getAllProjects();
 };
 
+// get all projects with their users 
+export const getAllProjectsWithDetails=async()=>{
+
+  const projects= await projectRepositories.getAllProjectsWithDetails();
+
+  return projects
+}
 
 export const getProject = async (id: number): Promise<Project> => {
-    /**
-     * Retrieves a single project by its ID.
-     * Validates the ID and checks if the project exists.
-    */
+  //  handle bad request 
     if (isNaN(id)) {
         throw new Error ("Invalid projectid")
     }
@@ -28,7 +32,7 @@ export const getProject = async (id: number): Promise<Project> => {
 }
 
 
-// Creates a new project and returns the created record along with a success message.
+// add a project :refactor this code, it works only when one is logged in
 export const createNewProject = async (project: NewProject, authUser: any) => {
   // Validate required fields before any DB work
   if (!project || !project.title) {
@@ -71,15 +75,15 @@ export const createNewProject = async (project: NewProject, authUser: any) => {
   }
 
   return {
-    message: "Project created successfully with team members",
-    project: createdProject,
+    message: result.message,
+    project: result.project,
   };
 };
 
 
 
 export const deleteProject = async (id: number) => {
-    // bad request: check if Id is valid
+    //handle bad requests 
     if (isNaN(id)) {
         throw new Error('Inavlid userid')
     }
@@ -88,7 +92,6 @@ export const deleteProject = async (id: number) => {
     if (!existingproject) {
         throw new Error ('Project not found')
     }
-    // wait for the project to be deleted in the repository 
     const result = await projectRepositories.deleteProject(id);
     // return success message and project record deleted 
     return {
@@ -99,9 +102,9 @@ export const deleteProject = async (id: number) => {
 
 
 
-// Updates an existing project by its ID and returns the updated record.
+// update project by id 
 export const updateProject = async (id: number, projectData: UpdateProject, authUser:any) => {
-  //validate the Id
+  //handle bad requests 
   if (isNaN(id)) {
     throw new Error("Invalid project ID");
   }
