@@ -35,7 +35,7 @@ const schema = yup.object({
 export const UpdateTask = ({ task }: UpdateTaskProps) => {
   const [updateTask, { isLoading }] = taskAPI.useUpdateTaskMutation();
 
-  // REAL API CALL FOR PROJECTS WITH USERS
+  
   const { data: projectsData } = projectAPI.useGetProjectsWithDetailsQuery();
 
   const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null);
@@ -64,14 +64,14 @@ export const UpdateTask = ({ task }: UpdateTaskProps) => {
     if (!task || !projectsData) return;
 
     // Find project by its name
-    const project = projectsData.data.find((p) => p.title === task.project);
+    const project = projectsData.data.find((p) => p.title === task.project_title);
     const projId = project?.id || null;
 
     setSelectedProjectId(projId);
 
     setValue("projectid", projId || 0);
-    setValue("created_by", task.created_by);
-    setValue("assigned_to", task.assigned_to);
+    setValue("created_by", task.created_by_id);
+    setValue("assigned_to", task.assigned_to_id);
     setValue("title", task.task_title);
     setValue("description", task.description);
     setValue("priority", task.priority as UpdateTaskInputs["priority"]);
@@ -87,15 +87,21 @@ export const UpdateTask = ({ task }: UpdateTaskProps) => {
     }
 
     const payload = {
-      ...data,
-      id: task.taskid,
-      projectid: Number(data.projectid),
-      created_by: Number(data.created_by),
+      projectid: Number(task.projectid),   // from selected task or form
+      created_by: Number(task.created_by_id), // from selected task
       assigned_to: Number(data.assigned_to),
+      title: data.title,
+      description: data.description,
+      priority: data.priority,
+      status: data.status,
+      due_date: data.due_date,
     };
 
+    // console.log("Updating task id:", task.taskid);
+    // console.log("Payload:", payload);
+
     try {
-      const response = await updateTask(payload).unwrap();
+      const response = await updateTask({ ...payload, id: task.taskid }).unwrap();
       toast.success(response.message);
 
       reset();
@@ -121,8 +127,8 @@ export const UpdateTask = ({ task }: UpdateTaskProps) => {
             <select
               {...register("projectid")}
               value={selectedProjectId || ""}
-              onChange={(e) => setSelectedProjectId(Number(e.target.value))}
               className="select w-full border border-gray-300"
+              disabled
             >
               <option value="">Select a project</option>
               {projectsData?.data.map((project) => (
@@ -137,8 +143,11 @@ export const UpdateTask = ({ task }: UpdateTaskProps) => {
           {/* Created By */}
           <label className="flex flex-col">
             <span className="font-medium">Created By *</span>
-            <select {...register("created_by")} className="select w-full border border-gray-300">
-              <option value="">Select creator</option>
+            <select 
+              {...register("created_by")} 
+              className="select w-full border border-gray-300"
+              disabled
+              >
               {projectUsers.map((user) => (
                 <option key={user.id} value={user.id}>
                   {user.name}
@@ -152,7 +161,6 @@ export const UpdateTask = ({ task }: UpdateTaskProps) => {
           <label className="flex flex-col">
             <span className="font-medium">Assigned To *</span>
             <select {...register("assigned_to")} className="select w-full border border-gray-300">
-              <option value="">Select assignee</option>
               {projectUsers.map((user) => (
                 <option key={user.id} value={user.id}>
                   {user.name}
@@ -167,7 +175,7 @@ export const UpdateTask = ({ task }: UpdateTaskProps) => {
             <input
               type="text"
               {...register("title")}
-              className="input p-2 border border-gray-300"
+              className="input w-full p-2 border border-gray-300"
             />
           </label>
 
@@ -176,14 +184,14 @@ export const UpdateTask = ({ task }: UpdateTaskProps) => {
             <span className="font-medium">Description *</span>
             <textarea
               {...register("description")}
-              className="textarea p-2 border border-gray-300"
+              className="textarea w-full p-2 border border-gray-300"
             />
           </label>
 
           {/* Priority */}
           <label className="flex flex-col">
             <span className="font-medium">Priority *</span>
-            <select {...register("priority")} className="select border border-gray-300">
+            <select {...register("priority")} className="select border w-full border-gray-300">
               <option value="low">Low</option>
               <option value="medium">Medium</option>
               <option value="high">High</option>
@@ -194,7 +202,7 @@ export const UpdateTask = ({ task }: UpdateTaskProps) => {
           {/* Status */}
           <label className="flex flex-col">
             <span className="font-medium">Status *</span>
-            <select {...register("status")} className="select border border-gray-300">
+            <select {...register("status")} className="select border w-full border-gray-300">
               <option value="todo">Todo</option>
               <option value="in_progress">In Progress</option>
               <option value="blocked">Blocked</option>
@@ -208,7 +216,7 @@ export const UpdateTask = ({ task }: UpdateTaskProps) => {
             <input
               type="date"
               {...register("due_date")}
-              className="input p-2 border border-gray-300"
+              className="input w-full p-2 border border-gray-300"
             />
           </label>
 

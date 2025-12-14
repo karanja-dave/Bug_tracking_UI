@@ -83,22 +83,32 @@ export const deleteTaskById =async(id:number)=>{
 // update task by Id 
 export const updateTaskById = async (id: number, task: UpdateTask) => {
   const pool = await getPool();
-  const request = pool.request();
 
-  // prepare the inputs dynamically
-  const fields = Object.entries(task)
-    .filter(([_, value]) => value !== undefined)
-    .map(([key, value]) => {
-      request.input(key, value);
-      return `${key} = @${key}`;
-    });
+  await pool
+    .request()
+    .input('id', id)
+    .input('projectid', task.projectid)
+    .input('created_by', task.created_by)
+    .input('assigned_to', task.assigned_to || null) // handle unassigned
+    .input('title', task.title)
+    .input('description', task.description)
+    .input('priority', task.priority)
+    .input('status', task.status)
+    .input('due_date', task.due_date)
+    .query(`
+      UPDATE Tasks
+      SET
+        projectid = @projectid,
+        created_by = @created_by,
+        assigned_to = @assigned_to,
+        title = @title,
+        description = @description,
+        priority = @priority,
+        status = @status,
+        due_date = @due_date,
+        updated_at = GETDATE()
+      WHERE taskid = @id
+    `);
 
-  if (fields.length === 0) throw new Error('No fields to update');
-
-  request.input('id', id);
-
-  const query = `UPDATE Tasks SET ${fields.join(', ')} WHERE taskid = @id`;
-  await request.query(query);
-
-  return { message: 'Task updated successfully' };
+  return { message: "Task updated successfully" };
 };

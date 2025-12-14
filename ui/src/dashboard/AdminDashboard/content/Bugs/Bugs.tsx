@@ -89,7 +89,7 @@ export const Bugs = () => {
                     <th className="text-left p-4 text-sm font-semibold text-gray-700">Status</th>
                     <th className="text-left p-4 text-sm font-semibold text-gray-700">Reporter</th>
                     <th className="text-left p-4 text-sm font-semibold text-gray-700">Assignee</th>
-                    <th className="text-left p-4 text-sm font-semibold text-gray-700">Created</th>
+                    <th className="text-left p-4 text-sm font-semibold text-gray-700">Updated On</th>
                     <th className="p-4 text-right"></th>
                   </tr>
                 </thead>
@@ -143,7 +143,7 @@ export const Bugs = () => {
                           <td className="p-4">{bug.assignee_name || "Unassigned"}</td>
 
                           <td className="p-4">
-                            {new Date(bug.created_at).toLocaleDateString()}
+                            {new Date(bug.updated_at).toLocaleDateString()}
                           </td>
 
                           <td className="p-4 text-right relative">

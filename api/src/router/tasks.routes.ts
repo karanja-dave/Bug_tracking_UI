@@ -16,7 +16,7 @@ const taskRoutes=(app:Express)=>{
     // delete task by id 
     app.delete('/tasks/:id',tasksController.deleteTaskById)
     // update task by Id 
-    app.patch('/tasks/:id',tasksController.updateTaskById)
+    app.put('/tasks/:id',tasksController.updateTaskById)
 }
 
 export default taskRoutes

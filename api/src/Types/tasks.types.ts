@@ -22,6 +22,8 @@ export interface NewTask{
 }
 
 export type UpdateTask = {
+  projectid?: number;
+  created_by?: number;
   title?: string;
   description?: string;
   assigned_to?: number;
